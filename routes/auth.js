@@ -1,4 +1,3 @@
-const { User } = require("../models/user");
 const express = require("express");
 const { signin, signup, signout } = require("../controllers/auth");
 const { check, validationResult } = require("express-validator");
