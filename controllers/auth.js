@@ -3,6 +3,7 @@ const User = require("../models/user");
 
 exports.signup = (req, res) => {
   const email = req.body.email;
+  const pass = req.body.password;
   User.findOne({ email }, (err, user) => {
     if (user) return res.json("Email already registered");
   });
@@ -17,9 +18,6 @@ exports.signup = (req, res) => {
 
 exports.signin = (req, res) => {
   const { email, password } = req.body;
-  console.log(req.body);
-  console.log(email);
-  console.log(password);
   User.findOne({ email }, (err, user) => {
     if (err || !user) {
       return res.status(404).json({ error: "email does not exist" });
@@ -31,16 +29,15 @@ exports.signin = (req, res) => {
       });
     }
 
-    const token = jwt.sign({ _id: user._id }, "SECRETKEY");
+    const token = jwt.sign({ _id: user._id }, process.env.SECRET_KEY);
 
-    res.cookie("token", token, { expire: new Date() + 999 });
+    res.cookie("token", token, { expire: new Date() + 7 });
 
     res.json({ user });
   });
 };
 
 exports.signout = (req, res) => {
-  console.log(req.body);
   res.clearCookie("token");
   res.json({
     message: "User signout Successfully",
